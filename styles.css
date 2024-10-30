@@ -1,0 +1,25 @@
+body {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    height: 100vh;
+    margin: 0;
+    background-color: #f4f6f6;
+}
+
+#canvasContainer {
+    width: 400px; /* 设置区域宽度 */
+    height: 400px; /* 设置区域高度 */
+    border: 2px solid #6c2727;
+    border-radius: 15px; /* 圆角边框 */
+    position: relative;
+    overflow: hidden;
+    background-color: white;
+}
+
+#networkCanvas {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* 将图居中 */
+}
