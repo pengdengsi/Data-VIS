@@ -21,9 +21,21 @@ const customNodes = [
 const nodes = [];
 const angles = (2 * Math.PI) / numSides;
 
-// 创建连线粗细度的数值集
-const lineWidths = [1, 3, 6, 7, 15]; // 每条线段的粗细度
+// 创建每条连线的粗细度
+const lineWidths = [
+    { from: 0, to: 1, width: 1 },
+    { from: 0, to: 2, width: 3 },
+    { from: 0, to: 3, width: 6 },
+    { from: 0, to: 4, width: 7 },
+    { from: 1, to: 2, width: 15 },
+    { from: 1, to: 3, width: 1 },
+    { from: 1, to: 4, width: 3 },
+    { from: 2, to: 3, width: 6 },
+    { from: 2, to: 4, width: 7 },
+    { from: 3, to: 4, width: 15 }
+];
 
+// 计算节点的位置
 for (let i = 0; i < numSides; i++) {
     const x = centerX + radius * Math.cos(i * angles);
     const y = centerY + radius * Math.sin(i * angles);
@@ -31,34 +43,34 @@ for (let i = 0; i < numSides; i++) {
 }
 
 function drawEdges(highlightedNodeIndex) {
-    for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-            ctx.beginPath();
-            ctx.moveTo(nodes[i].x, nodes[i].y);
-            ctx.lineTo(nodes[j].x, nodes[j].y);
-            
-            // 根据边的索引选择粗细度
-            const lineWidthIndex = (i + j) % lineWidths.length; // 使用 i 和 j 的和的模来选择粗细度
-            ctx.lineWidth = lineWidths[lineWidthIndex];
-            ctx.strokeStyle = 'gray';
-            ctx.stroke();
-        }
-    }
+    lineWidths.forEach(line => {
+        const { from, to, width } = line;
+        ctx.beginPath();
+        ctx.moveTo(nodes[from].x, nodes[from].y);
+        ctx.lineTo(nodes[to].x, nodes[to].y);
+        
+        ctx.lineWidth = width;
+        ctx.strokeStyle = 'black';
+        ctx.stroke();
+    });
 
     if (highlightedNodeIndex !== null) {
         for (let i = 0; i < nodes.length; i++) {
             if (i === highlightedNodeIndex) continue;
-
-            // 计算高亮线的宽度
-            const lineWidthIndex = (highlightedNodeIndex + i) % lineWidths.length; 
+    
+            // 查找当前节点和高亮节点之间的边的宽度
+            const line = lineWidths.find(line => (line.from === highlightedNodeIndex && line.to === i) || (line.from === i && line.to === highlightedNodeIndex));
+            const originalWidth = line ? line.width : 1; // 默认宽度为1
+    
             ctx.beginPath();
             ctx.moveTo(nodes[highlightedNodeIndex].x, nodes[highlightedNodeIndex].y);
             ctx.lineTo(nodes[i].x, nodes[i].y);
-            ctx.lineWidth = lineWidths[lineWidthIndex]; // 使用相同的线宽
+            ctx.lineWidth = originalWidth; // 使用原本的边宽
             ctx.strokeStyle = 'orange';
             ctx.stroke();
         }
     }
+    
 }
 
 // Draw nodes
